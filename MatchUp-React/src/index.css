@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+html,body{
+    margin: 0;
+    border: 0;
+    
+}
+
+h1{
+    font-family: "Lemon", serif;
+}
+nav{
+    font-family: "Lemon",serif;
+}
