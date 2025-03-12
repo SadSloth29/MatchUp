@@ -2,7 +2,7 @@ import React from 'react'
 import NavBar from '../Components/NavBar'
 const Home = () => {
   return (
-    <div id='home' className='h-screen bg-gradient-to-b from-[#F9D2E3] to-[#F8E6E9]'>
+    <div id='home' className='h-screen w-screen bg-cover bg-center bg-no-repeat'>
     <NavBar isHome={true}/>
     <div className='flex justify-center items-center p-4 text-[#eb4c7b]'>
         <h1 className='text-5xl'>

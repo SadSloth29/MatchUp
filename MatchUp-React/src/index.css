@@ -4,7 +4,9 @@ html,body{
     border: 0;
     
 }
-
+#home,#login{
+    background-image: url('../public/Background.png');
+}
 h1{
     font-family: "Lemon", serif;
 }

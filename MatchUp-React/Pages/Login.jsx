@@ -3,7 +3,7 @@ import NavBar from '../Components/NavBar'
 
 const Login = () => {
   return (
-    <div id='login' className='h-screen bg-gradient-to-b from-[#F9D2E3] to-[#F8E6E9]'>
+    <div id='login' className='h-screen w-screen bg-cover bg-center bg-no-repeat'>
     <NavBar isHome={false} />
     </div>
   )
