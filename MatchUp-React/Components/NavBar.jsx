@@ -18,8 +18,8 @@ const NavBar = ({isHome}) => {
        <div className='flex gap-8 justify-between items-center text-white ml-10 mr-10'>
         { isHome ? (
             <>
-        <Link className="rounded-4xl w-auto bg-[#df4e87] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/login">Login</Link>
-        <Link className="rounded-4xl w-auto bg-[#68bfec] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/signup">Sign Up</Link> 
+        <Link className="rounded-4xl w-auto bg-[#df4e87] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/auth/login">Login</Link>
+        <Link className="rounded-4xl w-auto bg-[#68bfec] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/auth/signup">Sign Up</Link> 
         </>) : (
             <>
             <Link className="rounded-4xl w-auto bg-[#68bfec] pt-1 pb-1 pl-20 pr-20 mr-10 ml-20 border-solid border-1 border-black" to='/'>Home</Link>

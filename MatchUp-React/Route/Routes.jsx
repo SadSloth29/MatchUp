@@ -10,7 +10,7 @@ import React from 'react'
             element: <Home/>
         },
         {
-            path: "/:type",
+            path: "/auth/:type",
             element: <Login/>
         }
     ]);

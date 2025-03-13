@@ -7,7 +7,7 @@ html,body{
 #home,#login{
     background-image: url('../public/Background.png');
 }
-h1{
+h1,h2{
     font-family: "Lemon", serif;
 }
 nav{
