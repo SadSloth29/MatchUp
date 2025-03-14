@@ -19,21 +19,23 @@ const Login = () => {
   if(result.success){
     setEmail("");
     setPassword("");
+    
     navigate("/login");
   }
 
   setMessage(result.message || result.error);
 }
-    else if(!isSignUp){
+    else if(!isLoggedIn && !isSignUp){
+      console.log("sending otp");
       const response=await fetch("http://localhost/ProjectMatchUp/API/login.php",{
       method: "POST",
-      headers: {"Content-Type":"application/x-www-form-urlencoded"},
-      body: new URLSearchParams({email,password}),
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password}),
 
     });
     const result=await response.json();
     if (result.success) {
-      setUserId(result.user_id);
+      setEmail(result.email);
       setShowOtpField(true);
       alert("OTP sent to your email");
     } else {
@@ -43,7 +45,28 @@ const Login = () => {
     }
 }
    
+ const verifyOtp= async ()=>{
+    console.log("sending otp thru hahaa");
+    const response= await fetch("http://localhost/ProjectMatchUp/API/verify_otp.php",{
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email,otp}),
+      credentials: "include",
+    });
 
+    const result=await response.json();
+    if (result.success) {
+      alert("Login successful!");
+      setIsLoggedIn(true);
+      setShowOtpField(false);
+      setEmail("");
+      navigate(`/users/${result.username}`);
+      
+    } else {
+      alert(result.error);
+    }
+
+ }
 
 
 
@@ -61,11 +84,35 @@ const Login = () => {
   const [message,setMessage]=useState("");
   const [showOtpField, setShowOtpField] = useState(false);
   const [otp, setOtp] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(()=>{
     setIsSignUp(type==='signup');
-  },[type]);
-  console.log(isSignUp);
+    const checkSession = async () => {
+      const response = await fetch('http://localhost/ProjectMatchUp/Core/check_session.php', {
+        method: 'GET',
+        credentials: 'include', 
+      });
+  
+      const result = await response.json();
+      if (result.success) {
+        setIsLoggedIn(true);
+        setUsername(result.username);
+    if (window.location.pathname !== `/users/${result.username}`) {
+      navigate(`/users/${result.username}`);
+    }
+  }
+   else {
+    setIsLoggedIn(false);
+  }
+
+
+if (!isLoggedIn) {
+  checkSession();
+} 
+    
+  }},[type,navigate]);
+  
   return (
     <div id='login' className='flex flex-col items-center h-screen w-screen bg-cover bg-center bg-no-repeat'>
     <NavBar isHome={false} />
@@ -87,9 +134,9 @@ const Login = () => {
         </div>)
         }
         {!isSignUp && showOtpField && (
-        <div>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" />
-          <button className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black' onClick={verifyOtp}>Submit</button>
+        <div className='flex gap-5 items-center justify-center'>
+          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP: " />
+          <button type="button" className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black' onClick={verifyOtp}>Submit</button>
         </div>
         )}
         
@@ -132,7 +179,7 @@ const Login = () => {
         )
         }
         {message && <p className='mt-4 text-red-500'>{message}</p>}
-        <p className='mb-0 mt-2 self-start'>{isSignUp ? (
+        <p className='mb-0 mt-2 self-start'>{(!showOtpField && isSignUp) ? (
           <>
             Already Have An Account?{" "}
             <Link to="/login" className="text-blue-500 hover:underline">
