@@ -17,15 +17,36 @@ const Login = () => {
 } );
   const result=await response.json();
   if(result.success){
+    setEmail("");
+    setPassword("");
     navigate("/login");
   }
 
   setMessage(result.message || result.error);
 }
-   
-    
+    else if(!isSignUp){
+      const response=await fetch("http://localhost/ProjectMatchUp/API/login.php",{
+      method: "POST",
+      headers: {"Content-Type":"application/x-www-form-urlencoded"},
+      body: new URLSearchParams({email,password}),
 
+    });
+    const result=await response.json();
+    if (result.success) {
+      setUserId(result.user_id);
+      setShowOtpField(true);
+      alert("OTP sent to your email");
+    } else {
+      alert(result.error);
+    }
+
+    }
 }
+   
+
+
+
+
   const {type}=useParams();
   const [isSignUp, setIsSignUp] = useState(false);
   const [gender, setGender] = useState("");
@@ -38,6 +59,8 @@ const Login = () => {
   const [interested,setInterested]=useState("");
   const [bio,setBio]=useState("");
   const [message,setMessage]=useState("");
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [otp, setOtp] = useState("");
 
   useEffect(()=>{
     setIsSignUp(type==='signup');
@@ -55,12 +78,21 @@ const Login = () => {
           <input required value={username} onChange={(e)=>setUsername(e.target.value)}className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1"type='text' name='username' id="username" placeholder='Sadman..'></input>
           
         </div>)}
+        {!showOtpField && (
         <div className='flex align-middle items-center gap-4 m-2'>
           <label for="email">Email</label>
           <input required value={email} onChange={(e)=>setEmail(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='email' name='email' id="email" placeholder='sadman@gmail.com'></input>
           <label for="password">Password</label>
           <input required value={password} onChange={(e)=>setPassword(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='password' name='password' id="password"></input>
+        </div>)
+        }
+        {!isSignUp && showOtpField && (
+        <div>
+          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" />
+          <button className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black' onClick={verifyOtp}>Submit</button>
         </div>
+        )}
+        
         {isSignUp && (
           <div className='flex flex-col gap-2'>
             <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
@@ -95,7 +127,10 @@ const Login = () => {
           </div>
         )}
         <div className='flex flex-col justify-center items-center mt-4 mb-0'>
+        {!showOtpField && (
         <button type='submit' name='submit' className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black'>{isSignUp?"Sign Up":"Login"}</button>
+        )
+        }
         {message && <p className='mt-4 text-red-500'>{message}</p>}
         <p className='mb-0 mt-2 self-start'>{isSignUp ? (
           <>
