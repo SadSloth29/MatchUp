@@ -7,7 +7,15 @@ const Login = () => {
   const {type}=useParams();
   const [isSignUp, setIsSignUp] = useState(false);
   const [gender, setGender] = useState("");
-  
+  const [username,setUsername]=useState("");
+  const [email,setEmail]=useState("");
+  const [password,setPassword]=useState("");
+  const [age,setAge]=useState("");
+  const [city,setCity]=useState("");
+  const [country,setCountry]=useState("");
+  const [interested,setInterested]=useState("");
+  const [bio,setBio]=useState("");
+
   useEffect(()=>{
     setIsSignUp(type==='signup');
   },[type]);
@@ -20,28 +28,28 @@ const Login = () => {
       <div id='form-holder' className='flex flex-col'>
       <form method='post' name='registration' className='flex flex-col justify-start items-center rounded-3xl p-10 m-10 mt-4 bg-[#ffffff]'>
         {isSignUp && (<div className='flex align-middle items-center gap-4 m-2'>
-          <label for="firstname">First Name:</label>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1"type='text' name='firstname' placeholder='Sadman..'></input>
-          <label for="lastname">Last Name:</label>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='text' name='lastname'  placeholder='Hasan..'></input>
+          <label for="username">User Name:</label>
+          <input required value={username} onchange={(e)=>setUsername(e.target.value)}className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1"type='text' name='firstname' placeholder='Sadman..'></input>
+          
         </div>)}
         <div className='flex align-middle items-center gap-4 m-2'>
           <label for="email">Email</label>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='email' name='email' placeholder='sadman@gmail.com'></input>
+          <input required value={email} onchange={(e)=>setEmail(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='email' name='email' placeholder='sadman@gmail.com'></input>
           <label for="password">Password</label>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='password' name='password'></input>
+          <input required value={password} onchange={(e)=>setPassword(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='password' name='password'></input>
         </div>
         {isSignUp && (
           <div className='flex flex-col gap-2'>
             <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
             <label for='age'>Age:</label>
-            <input className="bg-[#c8ecea] rounded-2xl border-1 border-solid border-black p-1" type='text' name='age'></input>
+            <input required value={age} onchange={(e)=>setAge(e.target.value)} className="bg-[#c8ecea] rounded-2xl border-1 border-solid border-black p-1" type='text' name='age'></input>
             <label for='gender'>Gender</label>
             <select
                id="gender"
                value={gender}
                onChange={(e) => setGender(e.target.value)}
                className="bg-[#c8ecea] rounded-2xl border-1 border-solid border-black p-2 mr-2"
+               required
             >
             <option value="" disabled>Select your gender:</option>
             <option value="male">Male</option>
@@ -50,16 +58,16 @@ const Login = () => {
              </div>
              <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
               <label for="city">City:</label>
-             <input className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='city'></input>
+             <input value={city} onchange={(e)=>setCity(e.target.value)} className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='city'></input>
              <label for="country">Country:</label>
-             <input className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='country'></input>
+             <input value={country} onchange={(e)=>setCountry(e.target.value)} className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='country'></input>
              </div >
              <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
              <label className="self-start m-2 mr-0 ml-0" for='interested_in'>Interested In:</label>
-             <input className='flex align-baseline items-center gap-4 m-1 ml-0 mr-4 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='interested_in'></input>
+             <input value={interested} onchange={(e)=>setInterested(e.target.value)} className='flex align-baseline items-center gap-4 m-1 ml-0 mr-4 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='interested_in'></input>
              </div>
              <label className="self-start m-1" for='bio'>Bio:</label>
-             <input className='h-10 flex align-baseline items-center gap-4 m-1 mt-0 mr-2 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='bio'></input>
+             <input value={bio} onchange={(e)=>setBio(e.target.value)} className='h-10 flex align-baseline items-center gap-4 m-1 mt-0 mr-2 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='bio'></input>
           </div>
         )}
         <div className='flex flex-col justify-center items-center mt-4 mb-0'>
