@@ -3,6 +3,7 @@ import Home from '../Pages/Home'
 import Login from '../Pages/Login'
 import React from 'react'
 import UserFeed from '../Pages/UserFeed'
+import ProtectedRoute from "../Components/protectedroute";
 
 
     const router=createBrowserRouter([
@@ -15,8 +16,11 @@ import UserFeed from '../Pages/UserFeed'
             element: <Login/>
         },
         {
-            path: "/users/:username",
-            element: <UserFeed/>
+            path: "/users",
+            element: <ProtectedRoute/>,
+            children:[
+                {path: ":username",element:<UserFeed/>},
+            ]
         }
     ]);
 
