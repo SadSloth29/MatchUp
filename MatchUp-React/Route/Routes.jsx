@@ -16,11 +16,9 @@ import ProtectedRoute from "../Components/protectedroute";
             element: <Login/>
         },
         {
-            path: "/users",
-            element: <ProtectedRoute/>,
-            children:[
-                {path: ":username",element:<UserFeed/>},
-            ]
+            path: "/users/:username",
+            element: <UserFeed/>
+            
         }
     ]);
 

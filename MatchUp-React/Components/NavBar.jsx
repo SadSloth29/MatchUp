@@ -7,7 +7,7 @@ const NavBar = ({isHome}) => {
     <nav className='flex gap-5 bg-[rgb(96,89,186)] rounded-2xl m-5 mb-2 mt-0 max-w-auto h-12 justify-start items-center'>
        <div className='flex gap-5 ml-10 mr-10 justify-evenly items-center text-[#f7136e] '>
         {isHome && (
-        <div>
+        <div className='flex gap-1'>
         <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#home'>HOME</a>
         <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#about'>ABOUT US</a>
         <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#services'>SERVICES</a>
