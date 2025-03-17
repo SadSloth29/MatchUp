@@ -1,10 +1,10 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import NavProfile from "../Components/NavProfile";
 
 const UserFeed = () => {
   const { username } = useParams();
   const navigate = useNavigate();
-
   const handleLogOut = async () => {
     await fetch("http://localhost/ProjectMatchUp/API/logout.php", {
       credentials: "include",
@@ -12,11 +12,11 @@ const UserFeed = () => {
     alert("Logged Out Successfully");
     navigate("/");
   };
+  
 
   return (
     <div>
-      <h1>Welcome, {username}!</h1>
-      <button onClick={handleLogOut}>Log Out</button>
+      <NavProfile username={username} handleLogOut={handleLogOut}/>
     </div>
   );
 };
