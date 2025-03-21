@@ -73,6 +73,13 @@ const UserProfile = () => {
 
         if(result.success){
           setInfo(result.info);
+
+          if(info.follow==0){
+            setFollowed(false);
+          }
+          else{
+            setFollowed(true);
+          }
         }
         else{
           console.error(result.error);
@@ -91,7 +98,8 @@ const UserProfile = () => {
         <NavProfile username={username}/>
         <div>
             <div className='flex flex-col items-center justify-end bg-gradient-to-b from-pink-200 to-white max-w-screen h-52 border-4 border-black'>
-            <img src='/profilepic.jpg' className='object-fill h-30 w-30 rounded-full border-1 border-black mb-1'  alt='profilepic'></img>
+            <img src={info.username? info.username:"/user.png"} className='object-fill h-30 w-30 rounded-full border-1 border-black mb-1'  alt='profilepic'>
+            {isOwner && (<button>Update Image</button>)}</img>
             <p id="profile_name" className='m-0'>Pugu</p>
             {!isOwner && (<button onClick={handleFollow} className='rounded-2xl absolute m-2 p-1 self-end right-1/3 border-3 border-black w-auto h-auto bg-gradient-to-b from-pink-400 to-white'>{followed? "Unfollow":"Follow"}</button>)}
             </div>
