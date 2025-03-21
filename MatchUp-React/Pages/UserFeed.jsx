@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import NavProfile from "../Components/NavProfile";
+import ShowPosts from "../Components/ShowPosts";
 
 const UserFeed = () => {
   const { username } = useParams();
@@ -16,7 +17,8 @@ const UserFeed = () => {
 
   return (
     <div>
-      <NavProfile username={username} handleLogOut={handleLogOut}/>
+      <NavProfile username={username}/>
+      <ShowPosts username={username} location={"feed"}></ShowPosts>
     </div>
   );
 };

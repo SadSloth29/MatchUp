@@ -1,11 +1,19 @@
 import React from 'react'
 import { useState,useEffect,useRef } from 'react'
 import { useNavigate,Link } from 'react-router-dom'
-const NavProfile = ({username,handleLogOut}) => {
+const NavProfile = ({username}) => {
+  const navigate=useNavigate();
   const [isOpen,setIsOpen]=useState(false);
   const [searchQuery,setSearchQuery]=useState("");
   const [searchResults,setSearchResults]=useState([]);
   const searchref=useRef(null);
+  const handleLogOut = async () => {
+    await fetch("http://localhost/ProjectMatchUp/API/logout.php", {
+      credentials: "include",
+    });
+    alert("Logged Out Successfully");
+    navigate("/");
+  };
   const searchUser= async (e)=>{
     const query=e.target.value;
     setSearchQuery(query);
