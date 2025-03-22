@@ -7,6 +7,12 @@ const ShowPosts = ({username,location}) => {
   const [Src,setSrc]=useState("/Like.png");
   const [loggedUser,setLoggedUser]=useState("");
   const [isOwner,setIsOwner]=useState(false);
+  const [isOpen,setIsOpen]=useState(false);
+  const [openPostId, setOpenPostId] = useState(null);
+
+  const toggleDropDown=(postId)=>{
+      setOpenPostId((prev)=>(prev===postId?null:postId));
+  }
 
   const handleLike= async (postId,liked)=>{
 
@@ -86,7 +92,7 @@ const ShowPosts = ({username,location}) => {
 
           if(result.success){
               setPosts(result.posts);
-              console.log(posts);
+              
               
           }
         }catch(error){
@@ -98,9 +104,9 @@ const ShowPosts = ({username,location}) => {
 } else {
     console.error("Missing username or location in request");
 }
-  },[username]);
+  });
 
-  console.log(posts);
+  
   return (
 
     <div className='m-5 border-2 p-5 border-black h-auto w-1/2 overflow-y-auto rounded-2xl bg-gray-50'>
@@ -109,9 +115,21 @@ const ShowPosts = ({username,location}) => {
         {posts.map((post)=>(
        <li key={post.post_id} className='flex flex-col mb-2'>
              <div className='flex items-center border-2 border-black'>
-                 
                  <img src={post.profile_pic} className='object-fill h-10 w-10 rounded-full border-1 border-black m-2'  alt='profilepic'></img>
                  <h3>{post.posted_by}</h3>
+                 {isOwner && (<button className='justify-self-end ml-5' onClick={()=>toggleDropDown(post.post_id)}><img src='/edit&.png' className='w-10 h-10 object-cover'></img></button>)}
+                 {openPostId===post.post_id && (
+        <div className="mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-lg">
+          <ul className="py-2 border-1 border-black rounded-2xl" id='ddm'>
+            <li>
+              <button>Edit Post</button>
+            </li>
+            <li>
+              <button>Delete Post</button>
+            </li>
+            </ul>
+            </div>
+                 )}
              </div>
              {post.post_type!="text" && (
              <div className='border-2 border-black'>
