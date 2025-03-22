@@ -98,7 +98,7 @@ const ShowPosts = ({username,location}) => {
 } else {
     console.error("Missing username or location in request");
 }
-  },[username,location,loggedUser]);
+  },[username]);
 
   console.log(posts);
   return (
