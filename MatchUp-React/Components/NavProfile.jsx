@@ -55,8 +55,10 @@ const NavProfile = ({username}) => {
     <nav className='flex max-w-screen h-14 gap-5 justify-between items-center bg-pink-400 border-1 border-solid border-black'>
         <div className='p-5 mr-2'>
             <h1 className='text-2xl'>
+              <Link to={`/users/${username}`}>
               <span className='text-[#fde7f0]'>Match</span>
               <span className='text-[#ff3888]'>Up</span>
+              </Link>
             </h1>
         </div>
         <div ref={searchref} className='relative'>
