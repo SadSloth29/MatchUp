@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
+import EditModal from './EditModal';
 const ShowPosts = ({username,location}) => {
 
   const [posts,setPosts]=useState([]);
@@ -7,8 +8,10 @@ const ShowPosts = ({username,location}) => {
   const [Src,setSrc]=useState("/Like.png");
   const [loggedUser,setLoggedUser]=useState("");
   const [isOwner,setIsOwner]=useState(false);
-  const [isOpen,setIsOpen]=useState(false);
+
   const [openPostId, setOpenPostId] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [modalAction, setModalAction] = useState('');
 
   const toggleDropDown=(postId)=>{
       setOpenPostId((prev)=>(prev===postId?null:postId));
@@ -106,11 +109,21 @@ const ShowPosts = ({username,location}) => {
 }
   });
 
+  const openModal = (post, action) => {
+    setSelectedPost(post);
+    setModalAction(action);
+  };
+
+  const closeModal = () => {
+    setSelectedPost(null);
+    setModalAction('');
+  };
+ 
   
   return (
-
+    
     <div className='m-5 border-2 p-5 border-black h-auto w-1/2 overflow-y-auto rounded-2xl bg-gray-50'>
-    {posts.length>0 && (
+    {(posts.length>0 && posts[0].post_id)? (
        <ul>
         {posts.map((post)=>(
        <li key={post.post_id} className='flex flex-col mb-2'>
@@ -118,26 +131,36 @@ const ShowPosts = ({username,location}) => {
                  <img src={post.profile_pic} className='object-fill h-10 w-10 rounded-full border-1 border-black m-2'  alt='profilepic'></img>
                  <h3>{post.posted_by}</h3>
                  {isOwner && (<button className='justify-self-end ml-5' onClick={()=>toggleDropDown(post.post_id)}><img src='/edit&.png' className='w-10 h-10 object-cover'></img></button>)}
-                 {openPostId===post.post_id && (
-        <div className="mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-lg">
+                 {isOwner && openPostId===post.post_id && (
+        <div className="mt-1 w-20 bg-white border border-gray-300 shadow-lg rounded-lg">
           <ul className="py-2 border-1 border-black rounded-2xl" id='ddm'>
             <li>
-              <button>Edit Post</button>
+              <button onClick={() => openModal(post, 'edit')}>Edit</button>
             </li>
             <li>
-              <button>Delete Post</button>
+              <button onClick={() => openModal(post, 'delete')}>Delete</button>
             </li>
             </ul>
             </div>
                  )}
              </div>
-             {post.post_type!="text" && (
-             <div className='border-2 border-black'>
-                {post.post_type==='image'?(
-                 <img src={post.img} className='object-contain h-60 w-full'></img>):
-                 (<video src={post.vid} controls className="object-contain h-60 w-full" />)}
-                 <button onClick={() => handleLike(post.post_id, post.liked)}><img className='h-4 w-4 object-contain m-1'src={post.liked==0 ? "/Like.png" : "/hearted.png"} alt='likeReact'></img></button>
-             </div>)}
+             {post.post_type !== "text" && (
+  <div className="border-2 border-black">
+    {post.post_type === "image" ? (
+      <img src={post.img} className="object-contain h-60 w-full" alt="post image" />
+    ) : post.post_type === "video" ? (
+      <video src={post.vid} controls className="object-contain h-60 w-full" />
+    ) : null}
+
+    <button onClick={() => handleLike(post.post_id, post.liked)}>
+      <img
+        className="h-4 w-4 object-contain m-1"
+        src={post.liked === 0 ? "/Like.png" : "/hearted.png"}
+        alt="likeReact"
+      />
+    </button>
+  </div>
+)}
              <div className='border-2 border-black'>
                  <h3 className='underline'>{post.posted_by}</h3>
                  <h3>{post.content}</h3>
@@ -146,7 +169,8 @@ const ShowPosts = ({username,location}) => {
          
          
          
-       </ul>)}
+       </ul>):(<h4 className='absolute right-1/2 text-2xl font-bold'>There are no posts</h4>)}
+       {selectedPost && <EditModal post={selectedPost} action={modalAction} onClose={closeModal} />}
     </div>
     
   )
