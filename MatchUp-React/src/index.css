@@ -23,3 +23,9 @@ label,input,select,p{
 nav{
     font-family: "Lemon",serif;
 }
+#profile_name,h3,.profile_info,#ddm{
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: 100;
+    color: black;
+}
