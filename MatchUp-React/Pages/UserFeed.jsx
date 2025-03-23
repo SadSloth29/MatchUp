@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import NavProfile from "../Components/NavProfile";
 import ShowPosts from "../Components/ShowPosts";
+import PostWindow from "../Components/PostWindow";
 
 const UserFeed = () => {
   const { username } = useParams();
@@ -17,8 +18,12 @@ const UserFeed = () => {
 
   return (
     <div>
-      <NavProfile username={username}/>
+    <NavProfile username={username}/>
+    <div className="flex flex-col gap-10 justify-between items-center">
+      
+      <PostWindow username={username}/>
       <ShowPosts username={username} location={"feed"}></ShowPosts>
+    </div>
     </div>
   );
 };
