@@ -169,7 +169,7 @@ const ShowPosts = ({username,location}) => {
          
          
          
-       </ul>):(<h4 className='absolute right-1/2 text-2xl font-bold'>There are no posts</h4>)}
+       </ul>):(<h4 className='text-2xl font-bold'>There are no posts.</h4>)}
        {selectedPost && <EditModal post={selectedPost} action={modalAction} onClose={closeModal} />}
     </div>
     
