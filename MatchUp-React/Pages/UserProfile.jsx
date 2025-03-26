@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import NavProfile from "../Components/NavProfile"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams,Link} from 'react-router-dom'
 import ShowPosts from '../Components/ShowPosts'
 import PfpUploadPop from '../Components/PfpUploadPop'
 const UserProfile = () => {
@@ -11,8 +11,33 @@ const UserProfile = () => {
   const [info, setInfo] = useState([]);
   const [user,setUser]=useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isBlocked,setisBlocked]=useState(null);
   
   const navigate=useNavigate();
+
+  
+
+  const handleBlock=async ()=>{
+    try{
+      const response=await fetch(`http://localhost/ProjectMatchUp/API/block.php`,
+        {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          credentials: "include",
+          body: JSON.stringify({
+            username: username,
+            blocked_by: loggedUser,
+            action: "insert"
+          })
+        });
+      const result=await response.json();
+      if(!result.success){
+        console.error("Could not finish block request",result.error);
+      }
+    }catch(error){
+      console.error("Could not connect to server",error);
+    }
+  }
 
   const handleUpload= async (newImageURL)=>{
 
@@ -88,6 +113,7 @@ const UserProfile = () => {
     checksession();
     
     
+    
   },[username]);
   useEffect(()=>{
     const fetchInfo=async ()=>{
@@ -123,8 +149,47 @@ const UserProfile = () => {
          console.error("Error fetching user info",error);
       }
     };
-    fetchInfo();    
+    const blocked=async ()=>{
+      try{
+        const response=await fetch(`http://localhost/ProjectMatchUp/API/block.php`,
+          {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            credentials: "include",
+            body: JSON.stringify({
+              username: username,
+              blocked_by: loggedUser,
+              action: "check"
+            })
+          });
+          const result=await response.json();
+          if(result.success){
+            setisBlocked(result.info);
+            console.log(result.info);
+          }
+      }catch(error){
+        console.error("could not check blocked status",error);
+      }
+    }
+    
+    blocked();
+    fetchInfo(); 
+       
   },[username,loggedUser]);
+
+ 
+
+  if(isBlocked && (isBlocked.blocked1===1 || isBlocked.blocked2===1)){
+    return(
+      <div className='w-screen h-screen bg-pink-200 flex flex-col justify-center items-center'>
+        <img src='/cat.png' className='object-contain w-1/4 h-1/4'></img>
+        <h2>Could not find this user. Press below to return to your feed</h2>
+        <Link to={`/profile/${loggedUser}`}>Back To Profile</Link>
+      </div>
+    )
+  }
+
+  
   
   return (
     <div className='flex flex-col gap-0 m-0'>
@@ -139,6 +204,7 @@ const UserProfile = () => {
             {showModal && isOwner && <PfpUploadPop onclose={() => setShowModal(false)} onUpload={handleUpload} />}
             <p id="profile_name" className='m-0'>{info[0].username}</p>
             {!isOwner && (<button onClick={handleFollow} className='rounded-2xl absolute m-2 p-1 self-end right-1/3 border-3 border-black w-auto h-auto bg-gradient-to-b from-pink-400 to-white'>{followed? "Unfollow":"Follow"}</button>)}
+            {!isOwner && (<button onClick={handleBlock} className='rounded-2xl absolute right-1/4 m-2 p-1 self-end border-black border-3 w-auto h-auto bg-red-600'>Block</button>)}
             </div>
             <div className='flex bg-pink-200 max-w-screen h-screen'>
                <div className='flex flex-col gap-5 m-5'>
