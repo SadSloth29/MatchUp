@@ -142,6 +142,7 @@ if (!isLoggedIn) {
   }},[type,navigate]);
   
   return (
+    
     <div id='login' className='flex flex-col items-center h-screen w-screen bg-cover bg-center bg-no-repeat'>
     <NavBar isHome={false} />
     <h2 className="text-2xl font-bold mb-4  text-[#e97ca3]">{isSignUp?"Sign Up":"Login"}</h2>
