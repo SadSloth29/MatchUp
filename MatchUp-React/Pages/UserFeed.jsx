@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import NavProfile from "../Components/NavProfile";
 import ShowPosts from "../Components/ShowPosts";
 import PostWindow from "../Components/PostWindow";
@@ -19,11 +19,16 @@ const UserFeed = () => {
   return (
     <div>
     <NavProfile username={username}/>
-    <div className="flex flex-col gap-10 justify-between items-center">
-      
+    
+    
+    <div className="flex flex-col gap-5 justify-between items-center w-auto">
+    <div className="flex w-full h-auto items-center gap-3 justify-center rounded-3xl border-2 border-black p-4 mt-2 bg-white">
+      <Link to={"/list/follow"}>Followers</Link>
+    </div>
       <PostWindow username={username}/>
       <ShowPosts username={username} location={"feed"}></ShowPosts>
     </div>
+    
     </div>
   );
 };
