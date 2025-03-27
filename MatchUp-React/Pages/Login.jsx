@@ -6,13 +6,41 @@ import { useState,useEffect } from 'react'
 const Login = () => {
   const navigate=useNavigate();
 
+  const getCoordinates= async (city,country)=>{
+    const apikey="6f896ea6bab3be3e7c423568b88969ec";
+    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${apikey}`;
+
+    try{
+       const response=await fetch(url);
+       const data=await response.json();
+       if(data.length>0){
+           const {lat,lon}=data[0];
+           return {latitude:lat,longitude:lon};
+       }else{
+           console.error("location not found");
+           return null;
+       }
+    }catch(error){
+       console.error("Could not complete request",error);
+    }
+}
+
   const handleSubmit=async (e)=>{
     e.preventDefault();
     if(isSignUp){
-    const response=await fetch("http://localhost/ProjectMatchUp/API/signup.php",{
+      let location=await getCoordinates(city,country);
+      console.log(location);
+      if (!location) {
+        alert("Invalid location");
+        return;
+    }
+      const response=await fetch("http://localhost/ProjectMatchUp/API/signup.php",{
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({username,email,password,gender,age,interested,bio}),
+      body: JSON.stringify({username,email,password,gender,age,interested,bio,city,country,
+        lat: location.latitude,
+        lon: location.longitude
+      }),
 
 } );
   const result=await response.json();
