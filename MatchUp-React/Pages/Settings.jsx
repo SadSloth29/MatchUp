@@ -9,13 +9,32 @@ const Settings = () => {
   const [email,setEmail]=useState("");
   const [bio,setBio]=useState("");
   const [password,setPassword]=useState("");
-  const [city,setCity]=useState("Dhaka");
-  const [country,setCountry]=useState("Bangladesh");
+  const [city,setCity]=useState("");
+  const [country,setCountry]=useState("");
   const [userInfo,setUserInfo]=useState(null);
   const [newPassword,setNewPassword]=useState("");
   const [personality,setPersonality]=useState("");
   const [match_distance,setMatch_distance]=useState(null);
   const [mesage,setMessage]=useState("");
+
+  const getCoordinates= async (city,country)=>{
+    const apikey="6f896ea6bab3be3e7c423568b88969ec";
+    const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${apikey}`;
+
+    try{
+       const response=await fetch(url);
+       const data=await response.json();
+       if(data.length>0){
+           const {lat,lon}=data[0];
+           return {latitude:lat,longitude:lon};
+       }else{
+           console.error("location not found");
+           return null;
+       }
+    }catch(error){
+       console.error("Could not complete request",error);
+    }
+}
   const handleSubmit= async (action)=>{
 
     const updatedInfo={};
@@ -26,7 +45,11 @@ const Settings = () => {
     if(match_distance!==userInfo.match_distance)updatedInfo.match_distance=match_distance;
     else updatedInfo.match_distance=userInfo.match_distance;
     if(bio!==userInfo.bio)updatedInfo.bio=bio;
-    else updatedInfo.bio=userInfo.bio;
+    else updatedInfo.bio="";
+    if(city!==userInfo.city)updatedInfo.city=city;
+    else updatedInfo.city=""
+    if(country!==userInfo.country)updatedInfo.country=country;
+    else updatedInfo.country=userInfo.country;
     updatedInfo.password=newPassword;
 
     if(action==="user"){
@@ -76,6 +99,7 @@ const Settings = () => {
       }
     }
     if(action==='profile'){
+      let location=getCoordinates(updatedInfo.city,updatedInfo.country);
       try{
 
         const response=await fetch("http://localhost/ProjectMatchUp/API/updateSettings.php",{
@@ -87,6 +111,8 @@ const Settings = () => {
               city: updatedInfo.city,
               country: updatedInfo.country,
               bio: updatedInfo.bio,
+              lat:location.latitude,
+              lon:location.longitude,
               option: "profile"
           })});
         
@@ -176,6 +202,8 @@ const Settings = () => {
           setPersonality(info.info.personality);
           setMatch_distance(info.info.match_distance);
           setBio(info.info.bio);
+          setCity(info.info.city);
+          setCountry(info.info.country);
         } else {
           console.error("Could not fetch user info:", info.error);
         }
