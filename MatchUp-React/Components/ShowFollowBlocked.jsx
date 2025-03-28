@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams,Link } from 'react-router-dom';
-
+import NavProfile from './NavProfile';
 const ShowFollowBlocked = () => {
 
   const [sorting,setSorting]=useState("A-Z");
@@ -9,7 +9,78 @@ const ShowFollowBlocked = () => {
   const [followers,setFollowers]=useState([]);
   const [following,setFollowing]=useState([]);
   const [blocked,setBlocked]=useState([]);
-  const { type } = useParams(); 
+  const { type } = useParams();
+  const handleRemove= async (username,action)=>{
+     if(action==='follower' && isFollow){
+      try{
+        
+          const response=await fetch(`http://localhost/ProjectMatchUp/API/handleFollow.php`,{
+            method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                  },
+                credentials: "include",
+                body: JSON.stringify({
+                    profile: loggedUser,
+                    action: "unfollow",
+                    follower: username 
+          })});
+          const result=await response.json();
+          if(result.success){
+            console.log("Removed from followers");
+          }
+      
+     }catch(error){
+      console.error("Could not request remove follower",error);
+     }
+    }
+    else if(action==='follower' && !isFollow){
+      try{
+        const response=await fetch(`http://localhost/ProjectMatchUp/API/block.php`,
+          {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            credentials: "include",
+            body: JSON.stringify({
+              username: username,
+              blocked_by: loggedUser,
+              action: "remove"
+            })
+          });
+        const result=await response.json();
+        if(!result.success){
+          console.error("Could not finish block request",result.error);
+        }
+      }catch(error){
+        console.error("Could not connect to server",error);
+      }
+    }
+    else if(action==='following'){
+      try{
+        
+        const response=await fetch(`http://localhost/ProjectMatchUp/API/handleFollow.php`,{
+          method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                },
+              credentials: "include",
+              body: JSON.stringify({
+                  profile: username,
+                  action: "unfollow",
+                  follower: loggedUser 
+        })});
+        const result=await response.json();
+        if(result.success){
+          console.log("Removed from followers");
+        }
+    
+   }catch(error){
+    console.error("Could not request remove follower",error);
+   }
+    }
+    
+    
+  }
   useEffect(()=>{
     setIsFollow(type==='follow');
     const checkAuth = async () => {
@@ -71,17 +142,17 @@ const ShowFollowBlocked = () => {
              })
             const result=await response.json();
             if(result.success){
-             setFollowers(result.followers);
-             setFollowing(result.following);
+             setFollowers(result.blocked);
+             
              
             }
             }catch(error){
-             console.error("Could not get follow info",error);
+             console.error("Could not get blocked info",error);
             }
          }
       }
       fetchInfo();
-  },[loggedUser, sorting])
+  })
   if(loggedUser===""){
     return (
         <div className="flex flex-col justify-center w-screen h-screen items-center bg-pink-300 text-white">
@@ -91,6 +162,7 @@ const ShowFollowBlocked = () => {
   }
   return (
     <div className='flex flex-col w-screen h-screen bg-pink-200 gap-5'>
+        <NavProfile username={loggedUser}/>
         <div className='flex'>
         <select
                value={sorting}
@@ -111,7 +183,7 @@ const ShowFollowBlocked = () => {
                     <div className='flex gap-2 items-center border-2 border-black w-1/6 h-auto'>
                         <img src={follower.pfp_url?`${follower.pfp_url}`:"/user.png"} className='w-10 h-10 object-contain border-r-2 border-r-black'></img>
                         <Link to={`/profile/${follower.username}`}><h2 className='font-bold'>{follower.username}</h2></Link>
-                        <button className='border-2 p-1 ml-5 border-black bg-red-300 w-auto h-auto justify-self-end'>{isFollow?"Remove":"Unblock"}</button>
+                        <button onClick={()=>handleRemove(follower.username,'follower')}className='border-2 p-1 ml-5 border-black bg-red-300 w-auto h-auto justify-self-end'>{isFollow?"Remove":"Unblock"}</button>
                     </div>
                 </li>))}
             </ul>
@@ -125,7 +197,7 @@ const ShowFollowBlocked = () => {
                     <div className='flex gap-2 items-center border-2 border-black w-1/6 h-auto'>
                         <img src={follower.pfp_url?`${follower.pfp_url}`:"/user.png"} className='w-10 h-10 object-contain border-r-2 border-r-black'></img>
                         <h2 className='font-bold'>{follower.username}</h2>
-                        <button className='border-2 p-1 ml-5 border-black bg-red-300 w-auto h-auto justify-self-end'>{isFollow?"Remove":"Unblock"}</button>
+                        <button onClick={()=>handleRemove(follower.username,'following')} className='border-2 p-1 ml-5 border-black bg-red-300 w-auto h-auto justify-self-end'>{isFollow?"Remove":"Unblock"}</button>
                     </div>
                 </li>))}
             </ul>
