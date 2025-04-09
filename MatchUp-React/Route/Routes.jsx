@@ -7,6 +7,10 @@ import ProtectedRoute from "../Components/protectedroute";
 import UserProfile from "../Pages/userprofile";
 import SettingsAuth from "../Components/SettingsAuth";
 import Settings from "../Pages/Settings";
+import ShowFollowBlocked from "../Components/ShowFollowBlocked";
+import Texts from "../Pages/Texts";
+import Matches from "../Pages/Matches";
+
 
 
     const router=createBrowserRouter([
@@ -31,6 +35,18 @@ import Settings from "../Pages/Settings";
             path: "/settings/:username",
             element: <Settings/>,
             
+        },
+        {
+            path: "/list/:type",
+            element: <ShowFollowBlocked />,
+        },
+        {
+            path: "/texts/:username",
+            element: <Texts/>
+        },
+        {
+            path: "/matches/:username",
+            element: <Matches/>
         }
     ]);
 
