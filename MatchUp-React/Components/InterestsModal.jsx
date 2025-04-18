@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { useParams, useNavigate} from "react-router-dom";
 const InterestsModal = () => {
   const [pq1,setPq1]=useState(0);
   const [pq2,setPq2]=useState(0);
@@ -11,6 +11,8 @@ const InterestsModal = () => {
   const [oq3,setOq3]=useState(0);
   const [oq4,setOq4]=useState(0);
   const [oq5,setOq5]=useState(0);
+  const {username}=useParams();
+  const navigate=useNavigate();
   const handleAnswers=async ()=>{
     try{
         const response=await fetch("http://localhost/ProjectMatchUp/API/interests.php",{
@@ -18,9 +20,24 @@ const InterestsModal = () => {
             headers: { 'Content-Type': 'application/json' },
             credentials: "include",
             body: JSON.stringify({
-                
+                pq1:pq1,
+                pq2:pq2,
+                pq3:pq3,
+                pq4:pq4,
+                pq5:pq5,
+                oq1:oq1,
+                oq2:oq2,
+                oq3:oq3,
+                oq4:oq4,
+                oq5:oq5,
+                username:username,
+                action: "none"
 
             })})
+            const result=response.json();
+            if(result.success){
+                 navigate(`/matches/${username}`);
+            }
 
     }catch(error){
 
