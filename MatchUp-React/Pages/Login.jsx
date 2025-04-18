@@ -143,7 +143,7 @@ if (!isLoggedIn) {
   
   return (
     
-    <div id='login' className='flex flex-col items-center h-screen w-screen bg-cover bg-center bg-no-repeat'>
+    <div id='login' className='flex flex-col items-center h-screen w-screen bg-gradient-to-b from-pink-300 to-white'>
     <NavBar isHome={false} />
     <h2 className="text-2xl font-bold mb-4  text-[#e97ca3]">{isSignUp?"Sign Up":"Login"}</h2>
     <div id='main-section' className='flex gap-6'>
