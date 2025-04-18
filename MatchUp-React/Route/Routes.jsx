@@ -10,6 +10,7 @@ import Settings from "../Pages/Settings";
 import ShowFollowBlocked from "../Components/ShowFollowBlocked";
 import Texts from "../Pages/Texts";
 import Matches from "../Pages/Matches";
+import MatchRec from "../Components/MatchRec";
 
 
 
@@ -47,6 +48,10 @@ import Matches from "../Pages/Matches";
         {
             path: "/matches/:username",
             element: <Matches/>
+        },
+        {
+            path: "/matches/recommended/:username",
+            element: <MatchRec/>
         }
     ]);
 
