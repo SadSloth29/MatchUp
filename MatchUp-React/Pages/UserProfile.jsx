@@ -42,6 +42,7 @@ const UserProfile = () => {
   const handleUpload= async (newImageURL)=>{
 
     if(!newImageURL) return;
+    console.log(newImageURL);
     try{
       const response=await fetch(`http://localhost/ProjectMatchUp/API/UpdatePfp.php`,
         {
@@ -134,8 +135,8 @@ const UserProfile = () => {
         if(result.success){
           setInfo(result.info);
           setUser(result.info.username);
-          
-          if(info.follow==0){
+          console.log(result.info[0].follow);
+          if(result.info[0].follow==0){
             setFollowed(false);
           }
           else{
@@ -193,7 +194,7 @@ const UserProfile = () => {
   
   return (
     <div className='flex flex-col gap-0 m-0'>
-        <NavProfile username={username}/>
+        <NavProfile username={loggedUser}/>
         
         <div>
             {info[0]?(
@@ -214,7 +215,7 @@ const UserProfile = () => {
                     <p className='profile_info'>Age:{info[0].age} </p><p className='profile_info'>Gender:{info[0].gender}</p>
                   </div>
                   <div className='flex justify-evenly gap-2'>
-                    <p className='profile_info'>City:Dhaka </p><p className='profile_info'> Country:Bangladesh </p>
+                    <p className='profile_info'>City:{info[0].city} </p><p className='profile_info'> Country:{info[0].country} </p>
                   </div>
                   <div className='flex justify-center'>
                     <p className='profile_info'>Bio:{info[0].bio}</p>
