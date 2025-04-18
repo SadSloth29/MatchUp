@@ -83,13 +83,13 @@ const PostWindow = ({username}) => {
     
  }
   return (
-    <div className='flex flex-col w-1/4 h-32 border-2 border-black p-2 m-5 mb-2 rounded-2xl'>
+    <div className='flex flex-col md:w-1/4 sm:w-1/2 h-32 border-2 border-black p-2 m-5 mb-2 rounded-2xl'>
         <div className='flex bg-gray-300 w-full h-full overflow-y-auto align-text-top border-2 border-black'>
             <input id='ddm' type='text' value={content} onChange={(e)=>setContent(e.target.value)}placeholder="Enter What's on your mind" className='h-full w-full'></input>
         </div>
         <div className='flex justify-start items-center'>
-            <button className='w-5 h-5 mr-4 mt-1' onClick={()=>{setShowModal(true); setType("image") }}><img className='object-contain w-full h-full'src='/gallery.png'></img></button>
-            <button className='w-5 h-5 mt-1' onClick={()=>{setShowModal(true); setType("video") }}><img className='object-contain w-full h-full'src='/multimedia.png'></img></button>
+            <button className='md:w-5 md:h-5 mr-4 mt-1' onClick={()=>{setShowModal(true); setType("image") }}><img className='object-contain w-full h-full'src='/gallery.png'></img></button>
+            <button className='md:w-5 md:h-5 mt-auto' onClick={()=>{setShowModal(true); setType("video") }}><img className='object-contain w-full h-full'src='/multimedia.png'></img></button>
             <button onClick={handleSubmit} className='w-auto h-5 border-2 border-black px-2 ml-10 mt-1 bg-blue-500 text-sm rounded-2xl'>Submit</button>
         </div>
         {showModal && (
