@@ -5,9 +5,10 @@ import React from 'react'
 
 const ProtectedRoute = () => {
     const [isAuthenticated,setIsAuthenticated]=useState(null);
+    
     useEffect(() => {
-        const checkAuth = async () => {
-          const response = await fetch("http://localhost/ProjectMatchUp/Core/checksession.php", {
+          const checkAuth = async () => {
+          const response = await fetch(`http://localhost/ProjectMatchUp/Core/checksession.php`, {
             method: "GET",
             credentials: "include",
           });
@@ -24,4 +25,4 @@ const ProtectedRoute = () => {
       return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

@@ -6,8 +6,10 @@ import { Link, useNavigate,useParams } from 'react-router-dom'
 import MatchRec from '../Components/MatchRec'
 import { calculateDistance } from '../Algorithms/distance'
 import { Similarity,similarityToPercentage } from '../Algorithms/recommendation'
+import MatchList from '../Components/MatchList'
 const Matches = () => {
   const [showModal,setShowModal]=useState(false);
+  const [showList,setShowList]=useState(false);
   const {username}=useParams();
   const [others,setOthers]=useState([]);
   const [own,setOwn]=useState({});
@@ -16,6 +18,7 @@ const Matches = () => {
   const navigate=useNavigate();
   const [closeModal,setCloseModal]=useState(false);
   const handleSubmitMatches=async ()=>{
+    setShowList(false);
     calculateMatches(others,own);
     if(recommendedMatches.length>0){
     try {
@@ -113,7 +116,7 @@ const Matches = () => {
 
      const distance=calculateDistance(own.latitude,own.longitute,user.latitude,user.longitute);
      console.log(distance,own.match_distance);
-     if(distance>own.match_distance) return;
+     
 
      const ownTraits = [
         own.q1,
@@ -136,7 +139,7 @@ const Matches = () => {
      const percentage = similarityToPercentage(similarity);
      console.log(percentage);
 
-     if(percentage>=70){
+     if(percentage>=50){
        matches.push({
          username2:user.partner,
          matchPercentage: percentage,
@@ -155,7 +158,7 @@ const Matches = () => {
   
   if(others.length===0 && !own){
     return (
-      <div className="flex flex-col justify-center w-screen h-screen items-center bg-pink-300 text-white">
+      <div className="flex flex-col justify-center w-screen h-screen items-center bg-blue-200 text-black">
         <h1>LOADING....</h1>
       </div>
     );
@@ -164,13 +167,18 @@ const Matches = () => {
     <>
     <NavProfile username={username}></NavProfile>
     {showModal && (<InterestsModal></InterestsModal>)}
-    <div className='flex flex-col gap-1 items-center'>
-      <div className='flex gap-3 px-4 py-1 border-4 border-black border-solid bg-pink-200 rounded-2xl mt-4 mb-2 w-1/5 justify-center items-center justify-self-center'>
-      <button onClick={handleSubmitMatches}>Recommendation</button>
-      <button>Matches List</button>
+    {!showModal && (
+    <div className='flex flex-col gap-1 items-center bg-gradient-to-b from-blue-200 to-white'>
+      
+      <div className="flex flex-col md:flex-row gap-3 px-6 py-2 border-4 border-black bg-blue-600 text-white font-semibold rounded-xl mt-4 mb-2 max-w-lg w-full justify-center">
+      <button className="px-4 py-2 bg-blue-800 hover:bg-blue-900 rounded-md transition duration-300" onClick={handleSubmitMatches}>Recommendation</button>
+      <button className="px-4 py-2 bg-blue-800 hover:bg-blue-900 rounded-md transition duration-300" onClick={()=>{setShowList(true);setCloseModal(false);}}>Matches List</button>
       </div>
+      <MatchList showList={showList}/>
       <MatchRec closeModal={closeModal} setCloseModal={setCloseModal}/>
-    </div>
+      
+      
+    </div>)}
     
     </>
   )

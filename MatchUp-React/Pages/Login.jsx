@@ -1,238 +1,186 @@
-import React from 'react'
-import NavBar from '../Components/NavBar'
-import { useParams,Link,useNavigate } from 'react-router-dom'
-import { useState,useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
+import NavBar from '../Components/NavBar';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const { type } = useParams();
 
-  const getCoordinates= async (city,country)=>{
-    const apikey="6f896ea6bab3be3e7c423568b88969ec";
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [username, setUsername] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
+  const [interested, setInterested] = useState('');
+  const [bio, setBio] = useState('');
+  const [message, setMessage] = useState('');
+
+  const getCoordinates = async (city, country) => {
+    const apikey = '6f896ea6bab3be3e7c423568b88969ec';
     const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${apikey}`;
-
-    try{
-       const response=await fetch(url);
-       const data=await response.json();
-       if(data.length>0){
-           const {lat,lon}=data[0];
-           return {latitude:lat,longitude:lon};
-       }else{
-           console.error("location not found");
-           return null;
-       }
-    }catch(error){
-       console.error("Could not complete request",error);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        return { latitude: lat, longitude: lon };
+      } else {
+        alert('Location not found.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Geo error:', error);
     }
-}
+  };
 
-  const handleSubmit=async (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(isSignUp){
-      let location=await getCoordinates(city,country);
-      console.log(location);
-      if (!location) {
-        alert("Invalid location");
-        return;
+
+    if (isSignUp) {
+      const location = await getCoordinates(city, country);
+      if (!location) return;
+
+      const response = await fetch("http://localhost/ProjectMatchUp/API/signup.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username, email, password, gender, age, interested, bio, city, country,
+          lat: location.latitude, lon: location.longitude
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setEmail("");
+        setPassword("");
+        navigate("/login");
+      }
+      setMessage(result.message || result.error);
+    } else if (!isLoggedIn && !isSignUp) {
+      const response = await fetch("http://localhost/ProjectMatchUp/API/login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await response.json();
+      if (result.success) {
+        setEmail(result.email);
+        setShowOtpField(true);
+        alert("OTP sent to your email");
+      } else {
+        alert(result.error);
+      }
     }
-      const response=await fetch("http://localhost/ProjectMatchUp/API/signup.php",{
+  };
+
+  const verifyOtp = async () => {
+    const response = await fetch("http://localhost/ProjectMatchUp/API/verify_otp.php", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({username,email,password,gender,age,interested,bio,city,country,
-        lat: location.latitude,
-        lon: location.longitude
-      }),
-
-} );
-  const result=await response.json();
-  if(result.success){
-    setEmail("");
-    setPassword("");
-    
-    navigate("/login");
-  }
-
-  setMessage(result.message || result.error);
-}
-    else if(!isLoggedIn && !isSignUp){
-      console.log("sending otp");
-      const response=await fetch("http://localhost/ProjectMatchUp/API/login.php",{
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({email, password}),
-
-    });
-    const result=await response.json();
-    if (result.success) {
-      setEmail(result.email);
-      setShowOtpField(true);
-      alert("OTP sent to your email");
-    } else {
-      alert(result.error);
-    }
-
-    }
-}
-   
- const verifyOtp= async ()=>{
-    console.log("sending otp thru hahaa");
-    const response= await fetch("http://localhost/ProjectMatchUp/API/verify_otp.php",{
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({email,otp}),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
       credentials: "include",
     });
-
-    const result=await response.json();
+    const result = await response.json();
     if (result.success) {
       alert("Login successful!");
       setIsLoggedIn(true);
       setShowOtpField(false);
       setEmail("");
       navigate(`/users/${result.username}`);
-      
     } else {
       alert(result.error);
     }
+  };
 
- }
-
-
-
-  const {type}=useParams();
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [gender, setGender] = useState("");
-  const [username,setUsername]=useState("");
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
-  const [age,setAge]=useState("");
-  const [city,setCity]=useState("");
-  const [country,setCountry]=useState("");
-  const [interested,setInterested]=useState("");
-  const [bio,setBio]=useState("");
-  const [message,setMessage]=useState("");
-  const [showOtpField, setShowOtpField] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(()=>{
-    setIsSignUp(type==='signup');
+  useEffect(() => {
+    setIsSignUp(type === 'signup');
     const checkSession = async () => {
-      const response = await fetch('http://localhost/ProjectMatchUp/Core/check_session.php', {
+      const response = await fetch('http://localhost/ProjectMatchUp/Core/checksession.php', {
         method: 'GET',
-        credentials: 'include', 
+        credentials: 'include',
       });
-  
       const result = await response.json();
       if (result.success) {
         setIsLoggedIn(true);
         setUsername(result.username);
-    if (window.location.pathname !== `/users/${result.username}`) {
-      navigate(`/users/${result.username}`);
-    }
-  }
-   else {
-    setIsLoggedIn(false);
-  }
+        if (window.location.pathname !== `/users/${result.username}`) {
+          navigate(`/users/${result.username}`);
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+    checkSession();
+  }, [type, navigate]);
 
-
-if (!isLoggedIn) {
-  checkSession();
-} 
-    
-  }},[type,navigate]);
-  
   return (
-    
-    <div id='login' className='flex flex-col items-center h-screen w-screen bg-gradient-to-b from-pink-300 to-white'>
-    <NavBar isHome={false} />
-    <h2 className="text-2xl font-bold mb-4  text-[#e97ca3]">{isSignUp?"Sign Up":"Login"}</h2>
-    <div id='main-section' className='flex gap-6'>
-      <div id='form-holder' className='flex flex-col'>
-      <form  onSubmit={handleSubmit} method='post' name='registration' className='flex flex-col justify-start items-center rounded-3xl p-10 m-10 mt-4 bg-[#ffffff]'>
-        {isSignUp && (<div className='flex align-middle items-center gap-4 m-2'>
-          <label for="username">User Name:</label>
-          <input required value={username} onChange={(e)=>setUsername(e.target.value)}className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1"type='text' name='username' id="username" placeholder='Sadman..'></input>
-          
-        </div>)}
-        {!showOtpField && (
-        <div className='flex align-middle items-center gap-4 m-2'>
-          <label for="email">Email</label>
-          <input required value={email} onChange={(e)=>setEmail(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='email' name='email' id="email" placeholder='sadman@gmail.com'></input>
-          <label for="password">Password</label>
-          <input required value={password} onChange={(e)=>setPassword(e.target.value)} className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type='password' name='password' id="password"></input>
-        </div>)
-        }
-        {!isSignUp && showOtpField && (
-        <div className='flex gap-5 items-center justify-center'>
-          <input className="bg-[#fec7ff] rounded-2xl border-1 border-solid border-black p-1" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP: " />
-          <button type="button" className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black' onClick={verifyOtp}>Submit</button>
-        </div>
-        )}
-        
-        {isSignUp && (
-          <div className='flex flex-col gap-2'>
-            <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
-            <label for='age'>Age:</label>
-            <input required value={age} onChange={(e)=>setAge(e.target.value)} className="bg-[#c8ecea] rounded-2xl border-1 border-solid border-black p-1" type='text' name='age' id="age"></input>
-            <label for='gender'>Gender</label>
-            <select
-               id="gender"
-               name="gender"
-               value={gender}
-               onChange={(e) => setGender(e.target.value)}
-               className="bg-[#c8ecea] rounded-2xl border-1 border-solid border-black p-2 mr-2"
-               required
-            >
-            <option value="" disabled>Select your gender:</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-             </select>
-             </div>
-             <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
-              <label for="city">City:</label>
-             <input value={city} onChange={(e)=>setCity(e.target.value)} className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='city' id='city'></input>
-             <label for="country">Country:</label>
-             <input value={country} onChange={(e)=>setCountry(e.target.value)} className="bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1"type='text' name='country' id='country'></input>
-             </div >
-             <div className='flex align-baseline items-center gap-4 m-2 mr-4'>
-             <label className="self-start m-2 mr-0 ml-0" for='interested_in'>Interested In:</label>
-             <input value={interested} onChange={(e)=>setInterested(e.target.value)} className='flex align-baseline items-center gap-4 m-1 ml-0 mr-4 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='interested_in' id='interested_in'></input>
-             </div>
-             <label className="self-start m-1" for='bio'>Bio:</label>
-             <input value={bio} onChange={(e)=>setBio(e.target.value)} className='h-10 flex align-baseline items-center gap-4 m-1 mt-0 mr-2 bg-[#dfdcf7] rounded-2xl border-1 border-solid border-black p-1' type='text' name='bio' id='bio'></input>
-          </div>
-        )}
-        <div className='flex flex-col justify-center items-center mt-4 mb-0'>
-        {!showOtpField && (
-        <button type='submit' name='submit' className='text-white w-24 h-8 rounded-2xl bg-gradient-to-b from-[#6c5fd4] to-[#797988] border-1 border-solid border-black'>{isSignUp?"Sign Up":"Login"}</button>
-        )
-        }
-        {message && <p className='mt-4 text-red-500'>{message}</p>}
-        <p className='mb-0 mt-2 self-start'>{(!showOtpField && isSignUp) ? (
-          <>
-            Already Have An Account?{" "}
-            <Link to="/login" className="text-blue-500 hover:underline">
-              Login
-            </Link>
-          </>
-        ) : (
-          <>
-            Don't Have An Account?{" "}
-            <Link to="/signup" className="text-blue-500 hover:underline">
-              Sign Up
-            </Link>
-          </>
-        )}</p>
-        </div>
-        
-      </form>
-      </div>
-      <div>
-        <img src='BG.png' alt='side-image'></img>
-      </div>
-    </div>
-    </div>
-  )
-}
+    <div className='min-h-screen bg-blue-900 text-white'>
+      <NavBar isHome={false} />
+      <div className='flex flex-col justify-center items-center py-8'>
+        <h2 className='text-3xl font-semibold text-blue-100 mb-6'>
+          {isSignUp ? "Sign Up" : "Login"}
+        </h2>
 
-export default Login
+        <form onSubmit={handleSubmit} className='bg-blue-800 p-6 rounded-2xl shadow-md w-full max-w-md space-y-4'>
+          {isSignUp && (
+            <input type='text' placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' required />
+          )}
+          {!showOtpField && (
+            <>
+              <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' required />
+              <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' required />
+            </>
+          )}
+          {showOtpField && (
+            <div className='flex gap-2'>
+              <input type='text' placeholder='Enter OTP' value={otp} onChange={(e) => setOtp(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black' />
+              <button type='button' onClick={verifyOtp} className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded'>Submit</button>
+            </div>
+          )}
+          {isSignUp && (
+            <>
+              <input type='number' placeholder='Age' value={age} onChange={(e) => setAge(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' required />
+              <select value={gender} onChange={(e) => setGender(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black' required>
+                <option value="" disabled>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+              <input type='text' placeholder='City' value={city} onChange={(e) => setCity(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' />
+              <input type='text' placeholder='Country' value={country} onChange={(e) => setCountry(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' />
+              <input type='text' placeholder='Interested In' value={interested} onChange={(e) => setInterested(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' />
+              <textarea placeholder='Bio' value={bio} onChange={(e) => setBio(e.target.value)} className='w-full p-2 rounded bg-blue-100 text-black placeholder-gray-600' />
+            </>
+          )}
+
+          {!showOtpField && (
+            <button type='submit' className='w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded'>
+              {isSignUp ? "Sign Up" : "Login"}
+            </button>
+          )}
+
+          {message && <p className='text-red-300 text-sm text-center'>{message}</p>}
+
+          <div className='text-center mt-4'>
+            {(!showOtpField && isSignUp) ? (
+              <>
+                Already have an account? <Link to="/login" className='text-blue-300 hover:underline'>Login</Link>
+              </>
+            ) : (
+              <>
+                Don't have an account? <Link to="/signup" className='text-blue-300 hover:underline'>Sign Up</Link>
+              </>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

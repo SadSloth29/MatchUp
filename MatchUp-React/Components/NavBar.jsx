@@ -1,39 +1,73 @@
-import React from 'react'
-import Home from '../Pages/Home'
-import Login from '../Pages/Login'
-import { Link } from 'react-router-dom'
-const NavBar = ({isHome}) => {
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+
+const NavBar = ({ isHome }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <nav className='flex gap-5 bg-[rgb(96,89,186)] rounded-2xl m-5 mb-2 mt-0 max-w-auto h-12 justify-start items-center'>
-       <div className='flex gap-5 ml-10 mr-10 justify-evenly items-center text-[#f7136e] '>
-        {isHome && (
-        <div className='flex gap-1'>
-        <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#home'>HOME</a>
-        <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#about'>ABOUT US</a>
-        <a className="rounded-4xl w-auto bg-[rgba(234,235,249,255)] pt-1 pb-1 pl-4 pr-4 border-solid border-1 border-black" href='#services'>SERVICES</a>
+    <nav className="flex items-center justify-between bg-blue-900 px-4 py-3 mb-2 h-14 shadow-sm">
+     
+      <h1 className="text-lg md:text-2xl font-medium text-gray-100 tracking-wide font-sora drop-shadow-sm">
+        <span className="text-gray-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">MATCH</span>
+        <span className="text-blue-300 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)] ml-1">UP</span>
+      </h1>
+
+     
+      {isHome ? (
+        <div className="hidden md:flex gap-4">
+          <Link
+            to="/login"
+            className="px-4 py-1.5 bg-blue-100 text-blue-900 rounded-full text-sm font-medium hover:bg-blue-200 transition-all duration-200"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="px-4 py-1.5 bg-blue-500 text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-all duration-200"
+          >
+            Sign Up
+          </Link>
+        </div>
+      ) : (
+        <div className="hidden md:flex gap-4">
+          <Link
+            to="/"
+            className="px-4 py-1.5 bg-blue-100 text-blue-900 rounded-full text-sm font-medium hover:bg-blue-200 transition-all duration-200"
+          >
+            Home
+          </Link>
         </div>
       )}
-       </div>
-       <div className='flex justify-center items-center md:mr-40 md:ml-40 pr-12 pl-12'>
-        <h1 className='text-transparent bg-clip-text text-2xl font-bold  border-solid border-black border-2 border-r-4 border-l-4 p-1'>
-            <span className='text-[#fde7f0]' >MATCH</span>
-            <span className='text-[#ff3888]'>UP</span></h1>
-       </div>
-       <div className='flex gap-8 justify-between items-center text-white ml-10 mr-10'>
-        { isHome ? (
-            <>
-        <Link className="rounded-4xl w-auto bg-[#df4e87] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/login">Login</Link>
-        <Link className="rounded-4xl w-auto bg-[#68bfec] pt-1 pb-1 pl-5 pr-5 border-solid border-1 border-black" to="/signup">Sign Up</Link> 
-        </>) : (
-            <>
-            <Link className="rounded-4xl w-auto bg-[#68bfec] pt-1 pb-1 pl-20 pr-20 mr-10 ml-20 border-solid border-1 border-black" to='/'>Home</Link>
-            </>
-        )
-        
-        }
-       </div>
-    </nav>
-  )
-}
 
-export default NavBar
+      
+      {isHome && (
+        <div className="md:hidden">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
+            {menuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+
+         
+          {menuOpen && (
+            <div className="absolute top-16 right-4 bg-white text-black rounded-xl shadow-lg p-4 w-40 flex flex-col gap-3 z-50">
+              <Link
+                to="/login"
+                className="px-4 py-2 bg-blue-100 text-blue-900 rounded-md text-sm font-medium hover:bg-blue-200 transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default NavBar;
