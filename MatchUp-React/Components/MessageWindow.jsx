@@ -11,6 +11,25 @@ const MessageWindow = ({username,chatWith}) => {
       console.log(`${data.from} saw your messages.`);
     }
   });
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      const response = await fetch("http://localhost/ProjectMatchUp/API/fetch_messages.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ from: username, to: chatWith.username }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setMessages(result.messages);
+      } else {
+        console.error(result.error);
+      }
+    };
+  
+    if (username && chatWith?.username) {
+      loadChatHistory();
+    }
+  }, [username, chatWith]);
   const sendMessage = async () => {
     const msg = { type: 'message', from: username, to: chatWith.username, text };
     ws.current.send(JSON.stringify(msg));
@@ -25,22 +44,29 @@ const MessageWindow = ({username,chatWith}) => {
     setText('');
   };
   const deleteMessage = async (index, message) => {
-   
-    await fetch("http://localhost/ProjectMatchUp/API/delete_message.php", {
+    console.log(message);
+    const response=await fetch("http://localhost/ProjectMatchUp/API/delete_message.php", {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: message.from,
         to: chatWith.username,
-        time: message.time,
+        text: message.text,
+        
       }),
     });
-  
+    const result=await response.json();
+    if(result.success){
+      alert("Text successfully deleted");
+    }else{
+      alert(result.error);
+    }
     
     setMessages((prev) => prev.filter((_, i) => i !== index));
   };
   
   const reportMessage = async (message) => {
+
     await fetch("http://localhost/ProjectMatchUp/API/report_message.php", {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
