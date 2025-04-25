@@ -52,7 +52,7 @@ const MatchList = ({showList,username}) => {
             }
         } 
         fetchInfo();
-        }, [sorting,loggedUser]);
+        }, [sorting,loggedUser,isRequest,orderby]);
     return (
         <>
         {showList && (
@@ -98,10 +98,12 @@ const MatchList = ({showList,username}) => {
                   className="flex flex-col items-center bg-white p-2 rounded-lg shadow-md max-w-[300px] w-full"
                 >
                   <img
-                    src={follower.pfp_url ? `${follower.pfp_url}` : '/user.png'}
+                    src={follower.profile_pic ? `${follower.profile_pic}` : '/user.png'}
                     className="w-15 h-15 object-cover rounded-full mb-4"
                     alt={follower.username}
                   />
+                  <h3 className="text-gray-500">Match: {follower.Percentage}%</h3>
+                  <h3 className="text-gray-500">{follower.Distance}KM</h3>
                   <Link to={`/profile/${follower.username}`} className="font-medium text-black">
                     {follower.username}
                   </Link>
@@ -110,7 +112,7 @@ const MatchList = ({showList,username}) => {
                     onClick={() => handleRemove(follower.username, 'follower')}
                     className="mt-2 px-2 py-2 bg-red-500 text-white rounded-lg"
                   >
-                    {isRequest ? 'Remove' : 'Accept'}
+                    {isRequest==="Matches" ? 'Remove' : 'Accept'}
                   </button>
                 </div>
               ))}
