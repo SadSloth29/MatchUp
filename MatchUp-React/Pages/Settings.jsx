@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import NavProfile from "../Components/NavProfile";
-
+import ConfirmationModal from '../Components/ConfirmationModal';
 const Settings = () => {
   const navigate = useNavigate();
   const { username } = useParams();
@@ -16,6 +16,8 @@ const Settings = () => {
   const [personality, setPersonality] = useState("");
   const [match_distance, setMatch_distance] = useState(0);
   const [message, setMessage] = useState("");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getCoordinates = async (city, country) => {
     const apikey = "6f896ea6bab3be3e7c423568b88969ec";
@@ -156,6 +158,40 @@ const Settings = () => {
         console.error("Could not update settings", error);
       }
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await fetch("http://localhost/ProjectMatchUp/API/deleteAccount.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: username }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Account deleted successfully");
+        navigate("/login"); 
+      } else {
+        alert(result.error || "Error deleting account");
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setIsModalOpen(true); 
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false); 
+  };
+
+  const handleModalConfirm = () => {
+    setIsModalOpen(false); 
+    handleDeleteAccount(); 
   };
 
   useEffect(() => {
@@ -342,10 +378,18 @@ const Settings = () => {
           Update Preference Settings
         </button>
 
-        <button className="w-full sm:w-auto h-10 bg-red-500 p-2 border-2 border-black mt-4 rounded-lg text-white">
+        <button
+          className="w-full sm:w-auto h-10 bg-red-500 p-2 border-2 border-black mt-4 rounded-lg text-white"
+          onClick={handleDeleteClick} 
+        >
           Delete Account
         </button>
       </div>
+      <ConfirmationModal
+        show={isModalOpen}
+        onConfirm={handleModalConfirm} 
+        onCancel={handleModalCancel} 
+      />
     </div>
   );
 };

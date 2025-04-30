@@ -55,7 +55,7 @@ const Texts = () => {
       <NavProfile username={username} />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Users */}
+        
         <div className="w-1/3 border-r p-4 bg-white overflow-y-auto">
           <h2 className="text-lg font-semibold mb-4">Your Matches</h2>
           <ul className="space-y-3">
@@ -80,7 +80,7 @@ const Texts = () => {
           </ul>
         </div>
 
-        {/* Message Window */}
+        
         <div className="flex-1 bg-gray-100 p-4 overflow-hidden">
           {onShow && selectedUser && (
             <MessageWindow username={username} chatWith={selectedUser} />

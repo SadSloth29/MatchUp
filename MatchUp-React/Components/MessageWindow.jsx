@@ -82,12 +82,12 @@ const MessageWindow = ({username,chatWith}) => {
   };
   return (
     <div className="w-full max-w-2xl mx-auto p-4 bg-white rounded-xl shadow-md">
-      {/* Chat With Header */}
+     
       <h2 className="text-xl font-semibold mb-4 text-center text-blue-600">
         Chat with {chatWith.username}
       </h2>
   
-      {/* Message List */}
+     
       <div className="h-72 overflow-y-scroll border rounded-lg p-4 bg-gray-100 space-y-2 mb-4">
       {messages.map((msg, index) => (
   <div
@@ -116,20 +116,12 @@ const MessageWindow = ({username,chatWith}) => {
           Delete
         </button>
       )}
-      {msg.from !== username && (
-        <button
-          onClick={() => reportMessage(msg)}
-          className="hover:underline text-yellow-600"
-        >
-          Report
-        </button>
-      )}
     </div>
   </div>
 ))}
       </div>
   
-      {/* Input + Send */}
+      
       <div className="flex gap-2">
         <input
           value={text}

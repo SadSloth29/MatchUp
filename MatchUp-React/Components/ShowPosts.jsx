@@ -131,7 +131,7 @@ const ShowPosts = ({username,location}) => {
                  <img src={post.profile_pic} className='object-fill h-10 w-10 rounded-full border-1 border-black m-2'  alt='profilepic'></img>
                  <h3>{post.posted_by}</h3>
                  {isOwner && (<button className='justify-self-end ml-5' onClick={()=>toggleDropDown(post.post_id)}><img src='/edit&.png' className='w-10 h-10 object-cover'></img></button>)}
-                 {isOwner && openPostId===post.post_id && (
+                 {isOwner && openPostId===post.post_id && location!=="feed" && (
         <div className="mt-1 w-20 bg-white border border-gray-300 shadow-lg rounded-lg">
           <ul className="py-2 border-1 border-black rounded-2xl" id='ddm'>
             <li>

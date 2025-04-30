@@ -150,7 +150,7 @@ const UserProfile = () => {
 
     blocked();
     fetchInfo();
-  }, [username, loggedUser]);
+  }, [username, loggedUser,followed]);
 
   if (isBlocked && (isBlocked.blocked1 === 1 || isBlocked.blocked2 === 1)) {
     return (

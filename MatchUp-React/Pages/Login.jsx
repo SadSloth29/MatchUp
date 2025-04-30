@@ -60,6 +60,8 @@ const Login = () => {
         setEmail("");
         setPassword("");
         navigate("/login");
+      }else{
+        alert(result.error);
       }
       setMessage(result.message || result.error);
     } else if (!isLoggedIn && !isSignUp) {
@@ -173,7 +175,10 @@ const Login = () => {
               </>
             ) : (
               <>
+              {!showOtpField &&
+              (<>
                 Don't have an account? <Link to="/signup" className='text-blue-300 hover:underline'>Sign Up</Link>
+              </>)}
               </>
             )}
           </div>
